@@ -11,7 +11,13 @@ while [[ $flag -eq 0 ]]; do
 	cd $path_to_hosts -&>/dev/null
 	if [ $? -eq 0 ]; then
 		echo 'Correct path entered.'
-		echo "export COD_REPO=$path_to_repo" >> ~/.bashrc
+		# test if COD_REPO already exists
+		if grep -Fq "COD_REPO=" ~/.bashrc
+		then
+			sed -i '/export COD_REPO=/c\export COD_REPO='"$path_to_repo" ~/.bashrc
+		else
+			echo "export COD_REPO=$path_to_repo" >> ~/.bashrc
+		fi
 		break
 	else
 		echo 'Invalid path entered.'
@@ -28,7 +34,13 @@ while [[ $flag -eq 0 ]]; do
 	cd $path_to_env_activate -&>/dev/null
 	if [ $? -eq 0 ]; then
 		echo 'Correct path entered.'
-		echo "export COD_ENV=$path_to_env_activate" >> ~/.bashrc
+		# test if COD_ENV already exists
+		if grep -Fq "COD_ENV=" ~/.bashrc
+		then
+			sed -i '/export COD_ENV=/c\export COD_ENV='"$path_to_env_activate" ~/.bashrc
+		else
+			echo "export COD_ENV=$path_to_env_activate" >> ~/.bashrc
+		fi
 		break
 	else
 		echo 'Invalid path entered.'
@@ -36,6 +48,7 @@ while [[ $flag -eq 0 ]]; do
 	fi
 done
 
+#alias deploy='source /home/aliasav/Desktop/deploycode.sh'
 # Getting path of deloycode.sh
 flag=0
 while [[ $flag -eq 0 ]]; do
@@ -44,9 +57,14 @@ while [[ $flag -eq 0 ]]; do
 	cd $path_to_deploycode -&>/dev/null
 	if [ $? -eq 0 ]; then
 		echo 'Correct path entered.'
-		echo $path_to_deploycode
 		x="'source $path_to_deploycode/deploycode.sh'"
-		echo "alias deploy=$x" >> ~/.bashrc
+		# test if alias deploy already exists
+		if grep -Fq "alias deploy="
+		then
+			sed -i '/alias deploy=/c\alias deploy='"$x" ~/.bashrc
+		else
+			echo "alias deploy=$x" >> ~/.bashrc
+		fi
 		break
 	else
 		echo 'Invalid path entered.'
@@ -55,7 +73,5 @@ while [[ $flag -eq 0 ]]; do
 done
 
 echo 'Now you can deploy code, using command: `deploy`'
-echo 'Note: If you change the location of deploycode.sh, you have to do 2 things: '
-echo '1. Open ~/.bashrc, remove alias entry for deploy.'
-echo '2. Run this script again.'
+echo 'Note: If you change the location of deploycode.sh, you need to run this script again.'
 source ~/.bashrc
