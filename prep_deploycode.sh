@@ -48,7 +48,6 @@ while [[ $flag -eq 0 ]]; do
 	fi
 done
 
-#alias deploy='source /home/aliasav/Desktop/deploycode.sh'
 # Getting path of deloycode.sh
 flag=0
 while [[ $flag -eq 0 ]]; do
@@ -59,7 +58,7 @@ while [[ $flag -eq 0 ]]; do
 		echo 'Correct path entered.'
 		x="'source $path_to_deploycode/deploycode.sh'"
 		# test if alias deploy already exists
-		if grep -Fq "alias deploy="
+		if grep -Fq "alias deploy=" ~/.bashrc
 		then
 			sed -i '/alias deploy=/c\alias deploy='"$x" ~/.bashrc
 		else
