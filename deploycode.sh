@@ -9,8 +9,22 @@ else
 	flag=0
 	echo "Enter target server address to deploy: "
 	read server
-	echo "Enter branch to deploy: "
-	read branch
+	# branch validation
+	echo $(git branch) > /tmp/codedeployer1 2>&1
+	flag2=0
+	while [[ flag2 -eq 0 ]]; do
+		echo "Enter branch to deploy: "
+		read branch
+		if grep -wq "$branch" /tmp/codedeployer1 ; then
+			flag2=1
+			echo "Valid Branch entered: $branch"
+			rm -rf /tmp/codedeployer1
+			break
+		else
+			flag2=0
+			echo "Invalid branch entered"
+		fi
+	done
 	echo "Branch entered: $branch"
 	# creating temporary hosts file
 	touch /tmp/hosts
