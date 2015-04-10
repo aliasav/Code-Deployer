@@ -31,6 +31,6 @@ else
 	path_to_hosts="$COD_REPO/ops/orchestration/app_install"
 	sed '1!d' $path_to_hosts/hosts > /tmp/hosts
 	echo $server >> /tmp/hosts
-	ansible-playbook -i /tmp/hosts $path_to_hosts/app.yml --tags deploy --extra-vars "branch=$branch"
+	ansible-playbook -i /tmp/hosts $path_to_hosts/app.yml --tags deploy --extra-vars "branch=$branch server=staging"
 	rm -rf /tmp/hosts
 fi
