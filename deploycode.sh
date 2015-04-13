@@ -18,7 +18,7 @@ else
 		if grep -wq "$branch" /tmp/codedeployer1 ; then
 			flag2=1
 			echo "Valid Branch entered: $branch"
-			rm -rf /tmp/codedeployer1
+			rm -f /tmp/codedeployer1
 			break
 		else
 			flag2=0
@@ -27,10 +27,22 @@ else
 	done
 	echo "Branch entered: $branch"
 	# creating temporary hosts file
+	server_parameter=''
+	echo "Enter server parameter:"
+	read server_parameter
+	echo "Server parameter entered : $server_parameter"
 	touch /tmp/hosts
-	path_to_hosts="$COD_REPO/ops/orchestration/app_install"
-	sed '1!d' $path_to_hosts/hosts > /tmp/hosts
-	echo $server >> /tmp/hosts
-	ansible-playbook -i /tmp/hosts $path_to_hosts/app.yml --tags deploy --extra-vars "branch=$branch server=staging"
-	rm -rf /tmp/hosts
+	if [[ "$server_parameter" = testing ]]; then
+		echo "TESTING"
+		sed '7!d' $path_to_hosts/hosts > /tmp/hosts
+		echo $server >> /tmp/hosts
+	else
+		if [[ "$server_parameter" = staging ]]; then
+			echo "STAGING"
+			sed '1!d' $path_to_hosts/hosts > /tmp/hosts
+			echo $server >> /tmp/hosts
+		fi
+	fi
+	ansible-playbook -i /tmp/hosts $path_to_hosts/app.yml --tags deploy --extra-vars "branch=$branch server=$server_parameter"
+	rm -f /tmp/hosts
 fi
