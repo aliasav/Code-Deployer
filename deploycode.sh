@@ -3,6 +3,7 @@ source $COD_ENV/activate
 echo "Present directory:" `pwd`
 git_status_output=$(git status 2>&1)
 exit_code=$?
+path_to_hosts=$COD_REPO/ops/orchestration/app_install
 if [ "$exit_code" = "128" ]; then
 	echo "Not inside a git repository, move into COD repository to deploy code."
 else
@@ -27,6 +28,8 @@ else
 	done
 	echo "Branch entered: $branch"
 	# creating temporary hosts file
+	rm -f /tmp/hosts
+	touch /tmp/hosts
 	server_parameter=''
 	echo "Enter server parameter:"
 	read server_parameter
