@@ -30,10 +30,19 @@ else
 	# creating temporary hosts file
 	rm -f /tmp/hosts
 	touch /tmp/hosts
-	server_parameter=''
-	echo "Enter server parameter:"
+	server_parameter='null'
+	environment_server='null'
+	queues='null'
+	echo "Enter environemt type: "
+	read environment_server
+	if [[ "$environment_server" = consumer_node ]]; then
+		echo "Enter queues for consumer node (periodic_tasks, sms_reminders, email_reminders, phonecall_reminders, billing, generic) Use commas for multiple queues: "
+		read queues
+	fi
+	echo "Enter server type:"
 	read server_parameter
-	echo "Server parameter entered : $server_parameter"
+	echo "Environment type entered : $environment_server"
+	echo "Server type entered : $server_parameter"
 	touch /tmp/hosts
 	if [[ "$server_parameter" = testing ]]; then
 		echo "TESTING"
@@ -45,7 +54,13 @@ else
 			sed '1!d' $path_to_hosts/hosts > /tmp/hosts
 			echo $server >> /tmp/hosts
 		fi
+	else
+		if [[ "$server_parameter" = production ]]; then
+			echo "PRODUCTION"
+			sed '4!d' $path_to_hosts/hosts > /tmp/hosts
+			echo $server >> /tmp/hosts
+		fi
 	fi
-	ansible-playbook -i /tmp/hosts $path_to_hosts/app.yml --tags deploy --extra-vars "branch=$branch server=$server_parameter"
+	ansible-playbook -i /tmp/hosts $path_to_hosts/app.yml --tags deploy --extra-vars "branch=$branch environment_server=$environment_server server=$server_parameter queues=$queues"
 	rm -f /tmp/hosts
 fi
